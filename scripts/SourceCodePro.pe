@@ -1,0 +1,59 @@
+#!/usr/bin/fontforge -script
+
+em        = 2048                # 1024 or 2048 is recommended for ttf fonts
+halfwidth = 1152                # (1/2 + 1/16) * 2048
+
+# ---- Parse command line args
+
+input  = ""
+output = ""
+
+i = 1
+while (i < $argc)
+  if (input == "")
+    input = $argv[i]
+  elseif (output == "")
+    output = $argv[i]
+  endif
+  i = i + 1
+endloop
+
+# ---- Open
+
+Open(input)
+Reencode("unicode")
+SelectWorthOutputting()
+ClearInstrs()
+UnlinkReference()
+
+# ---- Adjust parameters
+
+Print("SourceCodePro: Adjusting parameters ...")
+SelectWorthOutputting()
+ScaleToEm(em)
+
+# ---- Rescale
+
+Print("SourceCodePro: Rescaling ...")
+# 1000:600 -> 2048:1152
+# = 2048:1228.8 -> 2048:1152
+# 1228.8 - 1152 = 76.8
+SelectWorthOutputting()
+Move(-38, 0)
+SetWidth(halfwidth)
+RoundToInt()
+
+# ---- Remove non-ASCII glyphs
+
+Print("SourceCodePro: Removing non-ASCII glyphs ...")
+SelectWorthOutputting()
+SelectFewer(0u0020, 0u007E)
+DetachAndRemoveGlyphs()
+
+# ---- Font Generation
+
+Print("SourceCodePro: Generating temporary font ...")
+SelectWorthOutputting()
+Generate(output)
+
+Close()

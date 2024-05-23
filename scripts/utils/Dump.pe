@@ -1,0 +1,45 @@
+#!/usr/bin/fontforge -script
+
+Open($1)
+
+Print("<< Font properties >>")
+Print("unitsPerEm    ", $em);
+Print("WinAscent:    ", GetOS2Value("WinAscent"))
+Print("WinDescent:   ", GetOS2Value("WinDescent"))
+Print("HHeadAscent:  ", GetOS2Value("HHeadAscent"))
+Print("HHeadDescent: ", GetOS2Value("HHeadDescent"))
+Print("HHeadLineGap: ", GetOS2Value("HHeadLineGap"))
+Print("TypoAscent:   ", GetOS2Value("TypoAscent"))
+Print("TypoDescent:  ", GetOS2Value("TypoDescent"))
+Print("TypoLineGap:  ", GetOS2Value("TypoLineGap"))
+
+Print("<< Char widths >>")
+SelectSingletons(0u0057) # W
+Print("'W' width:    ", GlyphInfo('Width'))
+Print("'W' vwidth:   ", GlyphInfo('VWidth'))
+Print("'W' lbearing: ", GlyphInfo('LBearing'))
+Print("'W' rbearing: ", GlyphInfo('RBearing'))
+SelectSingletons(0u3042) # あ
+Print("'あ' width:    ", GlyphInfo('Width'))
+Print("'あ' vwidth:   ", GlyphInfo('VWidth'))
+Print("'あ' lbearing: ", GlyphInfo('LBearing'))
+Print("'あ' rbearing: ", GlyphInfo('RBearing'))
+SelectSingletons(0u9580) # 門
+Print("'門' width:    ", GlyphInfo('Width'))
+Print("'門' vwidth:   ", GlyphInfo('VWidth'))
+Print("'門' lbearing: ", GlyphInfo('LBearing'))
+Print("'門' rbearing: ", GlyphInfo('RBearing'))
+SelectSingletons(0u20) # SPC
+Print("'SPC' width:    ", GlyphInfo('Width'))
+Print("'SPC' vwidth:   ", GlyphInfo('VWidth'))
+Print("'SPC' lbearing: ", GlyphInfo('LBearing'))
+Print("'SPC' rbearing: ", GlyphInfo('RBearing'))
+
+Print("<< GSUB subtables >>")
+lookups = GetLookups("GSUB")
+size    = SizeOf(lookups)
+i       = 0
+while (i < size)
+  Print(GetLookupSubtables(lookups[i]))
+  i++
+endloop

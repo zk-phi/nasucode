@@ -1,0 +1,74 @@
+#!/usr/bin/fontforge -script
+
+# ---- Parse command line args
+
+sourcecode = ""
+nasum      = ""
+nerdfont   = ""
+output     = ""
+
+use_visiblespace = "no"
+
+i = 1
+while (i < $argc)
+  if ($argv[i] == "--visiblespace")
+    use_visiblespace = "yes"
+  elseif (sourcecode == "")
+    sourcecode = $argv[i]
+  elseif (nasum == "")
+    nasum = $argv[i]
+  elseif (nerdfont == "")
+    nerdfont = $argv[i]
+  elseif (output == "")
+    output = $argv[i]
+  endif
+  i = i + 1
+endloop
+
+# ---- Merge undefined glyphs from NasuM into iAWriter
+
+Open(sourcecode)
+Print("nasucode: Merging ...")
+MergeFonts(nasum)
+MergeFonts(nerdfont)
+
+# ---- Zenkaku space
+
+if (use_visiblespace == "yes")
+  Print("nasucode: Creating zenkaku space glyph ...")
+
+  # ballot box (☐)
+  Select(0u2610)
+  Copy()
+  Select(0u3000)
+  Paste()
+
+  # heavy greek cross (✚)
+  Select(0u271a)
+  Copy()
+  Select(0u3000)
+  PasteInto()
+
+  OverlapIntersect()
+  RoundToInt()
+  RemoveOverlap()
+  RoundToInt()
+endif
+
+# ---- Remove hints
+
+Print("nasucode: Removing old hints ...")
+SelectWorthOutputting()
+ClearHints()
+DontAutoHint()
+
+# ---- Font generation
+
+Print("nasucode: Generating the font ...")
+SetFontNames("nasucode", "nasucode", "nasucode")
+SetUniqueID(0)
+SelectWorthOutputting()
+RoundToInt()
+Generate(output)
+
+Close()

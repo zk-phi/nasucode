@@ -1,0 +1,59 @@
+#!/usr/bin/fontforge -script
+
+em        = 2048
+fullwidth = 2304
+
+# ---- Parse command line args
+
+input  = ""
+output = ""
+
+i = 1
+while (i < $argc)
+  if (input == "")
+    input = $argv[i]
+  elseif (output == "")
+    output = $argv[i]
+  endif
+  i = i + 1
+endloop
+
+# ---- Open
+
+Open(input)
+SelectWorthOutputting()
+ClearInstrs()
+UnlinkReference()
+
+# ---- Adjust parameters
+
+Print("NerdFont: Adjusting parameters ...")
+SelectWorthOutputting()
+ScaleToEm(em)
+# Copy-pasted from the modified SourceCodePro-font's value
+SetOS2Value("WinAscent", 2015)
+SetOS2Value("WinDescent", 559)
+SetOS2Value("HHeadAscent", 2015)
+SetOS2Value("HHeadDescent", -559)
+SetOS2Value("HHeadLineGap", 0)
+SetOS2Value("TypoAscent", 1536)
+SetOS2Value("TypoDescent", -512)
+SetOS2Value("TypoLineGap", 0)
+
+# ---- Adjust scale and baseline
+
+Print("NerdFont: Rescaling ...")
+SelectWorthOutputting()
+Scale(110)
+Move(0, 90)                     # x-position will be re-centered later
+SetWidth(fullwidth)
+CenterInWidth()
+RoundToInt()
+
+# ---- Font generation
+
+Print("NerdFont: Generating temporary font ...")
+SelectWorthOutputting()
+Generate(output)
+
+Close()

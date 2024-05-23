@@ -1,0 +1,76 @@
+#!/usr/bin/fontforge -script
+
+em        = 2048
+halfwidth = 1152
+fullwidth = 2304
+
+# ---- Parse command line args
+
+input  = ""
+output = ""
+
+i = 1
+while (i < $argc)
+  if (input == "")
+    input = $argv[i]
+  elseif (output == "")
+    output = $argv[i]
+  endif
+  i = i + 1
+endloop
+
+# ---- Open
+
+Open(input)
+SelectWorthOutputting()
+ClearInstrs()
+UnlinkReference()
+
+# ---- Adjust parameters
+
+Print("NasuM: Adjusting parameters ...")
+SelectWorthOutputting()
+ScaleToEm(em)
+# Copy-pasted from the modified SourceCodePro-font's value
+SetOS2Value("WinAscent", 2015)
+SetOS2Value("WinDescent", 559)
+SetOS2Value("HHeadAscent", 2015)
+SetOS2Value("HHeadDescent", -559)
+SetOS2Value("HHeadLineGap", 0)
+SetOS2Value("TypoAscent", 1536)
+SetOS2Value("TypoDescent", -512)
+SetOS2Value("TypoLineGap", 0)
+
+# ---- Adjust scale and baseline
+
+Print("NasuM: Rescaling ...")
+SelectWorthOutputting()
+Scale(90)
+
+# base-line is hand-adjusted
+# ("ASCII '$' vs kanji '門'" might be a good example)
+
+# 1024:512 -> 2048:1152
+# = 2048:1024 -> 2048:1152
+# 1152 - 1024 = 128
+Select(0u0020, 0u007E)          # ASCII
+Move(64, -70)
+SetWidth(halfwidth)
+RoundToInt()
+
+# 1024:1024 -> 2048:2304
+# = 2048:2048 -> 2048:2304
+# 2304 - 2048 = 256
+SelectWorthOutputting()
+SelectFewer(0u0020, 0u007E)
+Move(128, -70)
+SetWidth(fullwidth)
+RoundToInt()
+
+# ---- Font generation
+
+Print("NasuM: Generating temporary font ...")
+SelectWorthOutputting()
+Generate(output)
+
+Close()
