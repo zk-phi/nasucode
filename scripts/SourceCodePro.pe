@@ -3,6 +3,12 @@
 em        = 2048                # 1024 or 2048 is recommended for ttf fonts
 halfwidth = 1152                # (1/2 + 1/16) * 2048
 
+# Original metrics (em-height 1000 : glyph width 600 = 2048:1228.8) caused a problem (that,
+# full-width characters are not EXACTLY the same width as the double of half-width characters) in
+# some apps, including Emacs.
+
+# Rescaling em-height to 2048, and half-width width to 1/16em, solved the problem.
+
 # ---- Parse command line args
 
 input  = ""
